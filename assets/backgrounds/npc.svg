@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 320.41 400">
+  <!-- Generator: Adobe Illustrator 30.1.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 136)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: #87ceeb;
+      }
+
+      .st1 {
+        display: none;
+      }
+
+      .st2 {
+        fill: #483d8b;
+      }
+
+      .st3 {
+        fill: #fff;
+        isolation: isolate;
+        opacity: .8;
+      }
+    </style>
+  </defs>
+  <g id="npcs">
+    <g id="npc">
+      <g id="show">
+        <rect class="st0" x="145.32" y="186.45" width="28.35" height="56.69"/>
+      </g>
+      <g id="hide" class="st1">
+        <rect class="st2" x="142.7" y="156.86" width="35.01" height="25.6"/>
+        <path class="st3" d="M157.5,172.38h1.83v-4.85h-1.83v-1.48h5.42v1.48h-1.83v4.85h1.83v1.48h-5.42v-1.48Z"/>
+      </g>
+    </g>
+  </g>
+</svg>
