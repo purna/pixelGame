@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 2366.23 1095.19">
+  <!-- Generator: Adobe Illustrator 30.1.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 136)  -->
+  <defs>
+    <style>
+      .st0, .st1 {
+        fill: #396;
+      }
+
+      .st2 {
+        fill: green;
+      }
+
+      .st1, .st3 {
+        stroke: #000;
+        stroke-miterlimit: 10;
+      }
+
+      .st3 {
+        fill: none;
+      }
+
+      .st4 {
+        fill: red;
+      }
+
+      .st5 {
+        fill: gold;
+      }
+
+      .st6 {
+        display: none;
+      }
+    </style>
+  </defs>
+  <g id="platforms">
+    <rect x="42.51" y="678.93" width="800" height="20"/>
+    <rect x="192.51" y="618.93" width="100" height="20"/>
+    <rect x="392.51" y="578.93" width="100" height="20"/>
+    <rect x="592.51" y="538.93" width="100" height="20"/>
+    <rect x="914.51" y="638.93" width="800" height="20"/>
+    <rect x="1514.75" y="678.93" width="800" height="20"/>
+  </g>
+  <g id="collectables">
+    <rect class="st5" x="242.51" y="588.93" width="20" height="20"/>
+    <rect class="st5" x="442.51" y="548.93" width="20" height="20"/>
+    <rect class="st5" x="642.51" y="508.93" width="20" height="20"/>
+  </g>
+  <g id="checkpoints">
+    <rect class="st2" x="2267.65" y="623.93" width="30" height="50"/>
+  </g>
+  <g id="startpoint">
+    <rect class="st0" x="65.87" y="603.93" width="30" height="50"/>
+  </g>
+  <g id="enemies">
+    <rect class="st4" x="933.46" y="618.93" width="20" height="20"/>
+    <rect class="st4" x="731.86" y="658.93" width="20" height="20"/>
+  </g>
+  <g id="scenes">
+    <rect class="st1" x="751.86" y="408.89" width="103.14" height="186"/>
+  </g>
+  <g id="npcs">
+    <g id="npc">
+      <g id="show">
+        <rect class="st1" x="1640.28" y="579.96" width="28.35" height="56.69"/>
+      </g>
+      <g id="hide" class="st6">
+        <rect x="1637.66" y="550.37" width="35.01" height="25.6"/>
+        <path class="st4" d="M1652.46,565.89h1.83v-4.85h-1.83v-1.48h5.42v1.48h-1.83v4.85h1.83v1.48h-5.42v-1.48Z"/>
+      </g>
+    </g>
+  </g>
+  <g id="border">
+    <rect id="_x3C_Rectangle_x3E_" class="st3" y="0" width="2366.23" height="1095.19"/>
+  </g>
+</svg>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 3822.32 989.86">
+  <!-- Generator: Adobe Illustrator 30.1.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 136)  -->
+  <defs>
+    <style>
+      .st0 {
+        stroke-miterlimit: 10;
+        stroke-width: 1px;
+      }
+
+      .st0, .st1, .st2, .st3 {
+        fill: #bd8666;
+      }
+
+      .st0, .st1, .st2, .st3, .st4, .st5 {
+        stroke: #000;
+      }
+
+      .st1 {
+        stroke-miterlimit: 10;
+        stroke-width: 1px;
+      }
+
+      .st2 {
+        stroke-miterlimit: 10;
+        stroke-width: 1px;
+      }
+
+      .st6 {
+        fill: #396;
+        stroke: #fff;
+      }
+
+      .st6, .st3, .st4, .st5 {
+        stroke-miterlimit: 10;
+      }
+
+      .st7 {
+        fill: green;
+      }
+
+      .st8, .st4 {
+        fill: #3f6;
+      }
+
+      .st5 {
+        fill: none;
+        stroke-width: 2px;
+      }
+
+      .st9 {
+        fill: gold;
+      }
+
+      .st10 {
+        display: none;
+      }
+    </style>
+  </defs>
+  <g id="scenes">
+    <rect class="st6" x="553.36" y="171.27" width="731.86" height="215.93"/>
+    <rect class="st6" x="1614.88" y="171.27" width="731.86" height="215.93"/>
+    <rect class="st6" x="2622.59" y="168.34" width="731.86" height="215.93"/>
+  </g>
+  <g id="platforms">
+    <rect x="1487.93" y="658.8" width="1560.25" height="20"/>
+    <rect x="1687.93" y="578.8" width="100" height="20"/>
+    <rect x="1887.93" y="528.8" width="100" height="20"/>
+    <rect x="3083.59" y="532.89" width="541.71" height="150"/>
+    <rect x="58.94" y="662.89" width="800" height="20"/>
+    <rect x="258.94" y="582.89" width="100" height="20"/>
+    <rect x="458.94" y="532.89" width="100" height="20"/>
+    <rect x="908.34" y="532.89" width="541.71" height="150"/>
+    <rect x="846.5" y="597.89" width="100" height="20"/>
+    <rect x="888.5" y="560.13" width="100" height="20"/>
+  </g>
+  <g id="collectables">
+    <rect class="st9" x="1737.93" y="548.8" width="20" height="20"/>
+    <rect class="st9" x="1937.93" y="498.8" width="20" height="20"/>
+    <rect class="st9" x="308.94" y="552.89" width="20" height="20"/>
+    <rect class="st9" x="508.94" y="502.89" width="20" height="20"/>
+  </g>
+  <g id="checkpoints">
+    <rect class="st6" x="3567.7" y="478.8" width="30" height="50"/>
+  </g>
+  <g id="startpoint">
+    <rect class="st7" x="78.75" y="592.89" width="30" height="50"/>
+  </g>
+  <g id="npcs">
+    <g id="npc">
+      <g id="show">
+        <rect class="st4" x="2068.33" y="597.5" width="28.35" height="56.69"/>
+      </g>
+      <g id="hide" class="st10">
+        <rect x="2065.71" y="567.91" width="35.01" height="25.6"/>
+        <path class="st8" d="M2080.51,583.43h1.83v-4.85h-1.83v-1.48h5.42v1.48h-1.83v4.85h1.83v1.48h-5.42v-1.48Z"/>
+      </g>
+    </g>
+  </g>
+  <g id="boxes">
+    <rect class="st3" x="1601" y="618.89" width="39" height="39"/>
+    <rect class="st3" x="1614.88" y="579.3" width="39" height="39"/>
+    <rect class="st1" x="1556.94" y="618.92" width="39" height="39" transform="translate(485.3 1943.09) rotate(-72.14)"/>
+    <rect class="st2" x="1595.38" y="534.32" width="39" height="39" transform="translate(-92.13 579.47) rotate(-19.79)"/>
+    <rect class="st1" x="638.52" y="526.09" width="39" height="39" transform="translate(-63.09 1004.57) rotate(-72.14)"/>
+    <rect class="st0" x="589.48" y="501.52" width="39" height="39" transform="translate(-21.97 26.84) rotate(-2.48)"/>
+  </g>
+  <g id="border">
+    <rect id="_x3C_Rectangle_x3E_" class="st5" x=".5" y="0" width="3821.32" height="989.36"/>
+  </g>
+</svg>

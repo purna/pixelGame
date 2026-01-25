@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Platformer Game</title>
+    <link rel="stylesheet" href="css/styles.css">
+   
+</head>
+<body>
+    <div class="portfolio-container">
+        <h1>Moses Game</h1>
+        <p>Explore my work through this interactive platformer game!</p>
+        <button id="start-game">Start Game</button>
+
+    </div>
+    <div class="game-container">
+        <div class="collectables-counter">Collectables: <span id="collectables-count">0</span></div>
+        <div class="lives-counter">
+            <span class="life"><img src="assets/ui/heart.svg" alt="Heart" class="heart-icon"></span>
+            <span class="life"><img src="assets/ui/heart.svg" alt="Heart" class="heart-icon"></span>
+            <span class="life"><img src="assets/ui/heart.svg" alt="Heart" class="heart-icon"></span>
+        </div>
+        <canvas id="game-canvas"></canvas>
+    </div>
+    <div id="level-complete" class="level-complete">
+        <h2>Level Complete!</h2>
+        <p>Great job! Moving to the next level...</p>
+    </div>
+    <div id="game-over" class="game-over">
+        <h2>Game Over!</h2>
+        <p>You touched an enemy. Try again!</p>
+        <button id="restart-game">Play Again</button>
+    </div>
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/roughjs@4.5.2/bundled/rough.min.js"></script>
+    <script src="plugins/howler.min.js"></script>
+    <!-- Game Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/texture-manager.js"></script>
+    <script src="js/parallax-manager.js"></script>
+    <script src="js/ui-manager.js"></script>
+    <script src="js/audio-manager.js"></script>
+    <script src="js/ink-dialogue.js"></script>
+    <script type="module" src="js/game.js"></script>
+</body>
+</html>
