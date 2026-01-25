@@ -15,7 +15,8 @@ body {
     padding: 20px;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    z-index: 100;
+    z-index: 1000;
+    pointer-events: auto;
 }
 
 button {
@@ -64,6 +65,8 @@ button:hover {
     left: 0;
     width: 100%;
     height: 100%;
+    z-index: 10;
+    pointer-events: auto;
 }
 
 canvas {
@@ -72,6 +75,16 @@ canvas {
     height: 100%;
     border: 1px solid #000;
     background-color: #fff;
+    position: relative;
+    z-index: 10;
+}
+
+/* Explosion canvases created dynamically for short-lived particle effects */
+.explosion-canvas {
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    pointer-events: none !important;
 }
 
 .level-complete {
@@ -98,7 +111,8 @@ canvas {
     border-radius: 5px;
     font-family: Arial, sans-serif;
     font-size: 18px;
-    z-index: 10;
+    /* Ensure UI sits above the game canvas */
+    z-index: 1001;
 }
 
 .lives-counter {
@@ -111,7 +125,8 @@ canvas {
     border-radius: 5px;
     display: flex;
     gap: 10px;
-    z-index: 10;
+    /* Ensure UI sits above the game canvas */
+    z-index: 1001;
 }
 
 .life {

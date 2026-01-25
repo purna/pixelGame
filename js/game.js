@@ -46,6 +46,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let gravity = 0.5;
     let isJumping = false;
     let groundLevel;
+    // Track previous jump state to emit landing effects
+    let previousIsJumping = false;
+    // Counter used to emit periodic running dust while moving
+    let runDustCounter = 0;
 
     // Initialize player
     initPlayer(gameConfig.player);
@@ -548,21 +552,21 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // Draw collectables with Rough.js outlines only
+        // Draw collectables with Rough.js but without an external stroke to avoid a hard border
         collectables.forEach(collectable => {
             const drawX = collectable.position.x - camera.x;
-            // Fill with gold first
+            // Fill with gold first (no extra stroke/border)
             ctx.fillStyle = 'gold';
             const drawY = collectable.position.y - camera.y;
             ctx.fillRect(drawX, drawY, collectable.width, collectable.height);
 
-            // Add Rough.js sketch outline
+            // Use Rough.js to give a subtle textured fill but remove the stroke to avoid a hard border
             roughCanvas.circle(drawX + collectable.width/2, drawY + collectable.height/2, collectable.width, {
-                fill: 'transparent',
-                stroke: '#FFD700',
-                strokeWidth: 2,
-                roughness: 1.5,
-                fillStyle: 'solid',
+                fill: 'gold',
+                stroke: 'transparent',
+                strokeWidth: 0,
+                roughness: 1.2,
+                fillStyle: 'hachure',
                 seed: 103
             });
         });
@@ -661,37 +665,71 @@ document.addEventListener('DOMContentLoaded', () => {
         // Draw player using SVG with no container borders
         const playerDrawX = player.position.x - camera.x;
         const playerDrawY = player.position.y - camera.y;
+        // Determine facing: prefer input keys, fall back to horizontal velocity, default to facing right (1)
+        const facing = (keys.rightKey && keys.rightKey.pressed) ? 1 : ((keys.leftKey && keys.leftKey.pressed) ? -1 : (playerVelocity.x < 0 ? -1 : (playerVelocity.x > 0 ? 1 : 1)));
         if (playerSvgLoaded) {
-            // Draw the SVG directly to canvas
-            ctx.drawImage(playerSvg, playerDrawX, playerDrawY, player.width, player.height);
-
-            // Add Rough.js sketch outline around the player
-            roughCanvas.rectangle(playerDrawX, playerDrawY, player.width, player.height, {
-                fill: 'transparent',
-                stroke: '#00008B',
-                strokeWidth: 2,
-                roughness: 1.2,
-                fillStyle: 'solid',
-                seed: 108
-            });
+            ctx.save();
+            if (facing === -1) {
+                // Flip horizontally around player's top-left corner
+                ctx.translate(playerDrawX + player.width, playerDrawY);
+                ctx.scale(-1, 1);
+                ctx.drawImage(playerSvg, 0, 0, player.width, player.height);
+            } else {
+                ctx.drawImage(playerSvg, playerDrawX, playerDrawY, player.width, player.height);
+            }
+            ctx.restore();
+            // Removed Rough.js outline for player per request — keeps sprite clean without extra border
         } else {
             // Fallback to blue rectangle if SVG not loaded yet
+            ctx.save();
             ctx.fillStyle = 'blue';
-            ctx.fillRect(playerDrawX, playerDrawY, player.width, player.height);
-
-            // Add Rough.js sketch outline
-            roughCanvas.rectangle(playerDrawX, playerDrawY, player.width, player.height, {
-                fill: 'transparent',
-                stroke: '#00008B',
-                strokeWidth: 2,
-                roughness: 1.2,
-                fillStyle: 'solid',
-                seed: 108
-            });
+            if (facing === -1) {
+                ctx.translate(playerDrawX + player.width, playerDrawY);
+                ctx.scale(-1,1);
+                ctx.fillRect(0, 0, player.width, player.height);
+            } else {
+                ctx.fillRect(playerDrawX, playerDrawY, player.width, player.height);
+            }
+            ctx.restore();
+            // No Rough.js outline for the fallback player either
         }
 
-        // Update player position
+        // Update player position and emit landing/run dust effects
+        previousIsJumping = isJumping;
         isJumping = updatePlayer(keys, playerVelocity, gravity, isJumping, groundLevel, canvas, gameConfig, platforms);
+
+        // If we just landed (was jumping and now not), emit a landing dust at player's feet
+        if (previousIsJumping && !isJumping) {
+            try {
+                const rect = canvas.getBoundingClientRect();
+                const footX = player.position.x + player.width / 2;
+                const footY = player.position.y + player.height;
+                const pageX = rect.left + (footX - camera.x) + window.scrollX;
+                const pageY = rect.top + (footY - camera.y) + window.scrollY;
+                // Determine last movement direction: right -> 1, left -> -1, default 1
+                const movementDir = (keys.rightKey && keys.rightKey.pressed) ? 1 : ((keys.leftKey && keys.leftKey.pressed) ? -1 : 1);
+                if (window.onPlayerLand) window.onPlayerLand(pageX, pageY, movementDir);
+            } catch (e) {
+                // ignore
+            }
+        }
+
+        // Emit small periodic dust while running on the ground
+        runDustCounter++;
+        const moving = (keys.rightKey && keys.rightKey.pressed) || (keys.leftKey && keys.leftKey.pressed);
+        if (!isJumping && moving && runDustCounter % 12 === 0) {
+            try {
+                const rect = canvas.getBoundingClientRect();
+                const footX = player.position.x + player.width / 2;
+                const footY = player.position.y + player.height;
+                const pageX = rect.left + (footX - camera.x) + window.scrollX;
+                const pageY = rect.top + (footY - camera.y) + window.scrollY;
+                const movementDir = (keys.rightKey && keys.rightKey.pressed) ? 1 : ((keys.leftKey && keys.leftKey.pressed) ? -1 : 1);
+                if (window.onPlayerRunDust) window.onPlayerRunDust(pageX, pageY, movementDir);
+            } catch (e) {
+                // ignore
+            }
+        }
 
         // Camera/world scrolling using a deadzone around the player's position
         // Ensure camera.levelWidth/height are initialized
@@ -864,8 +902,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Check for collisions
     function checkCollisions() {
-        // Check for collectables
-        checkCollectableCollisions(player, collectables, collectablesCollected, uiManager, window.audioManager);
+        // Check for collectables (capture updated count returned by helper)
+        collectablesCollected = checkCollectableCollisions(player, collectables, collectablesCollected, uiManager, window.audioManager, camera, canvas);
 
         // Check for checkpoints
         checkpoints.forEach((checkpoint, index) => {
