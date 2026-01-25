@@ -12,7 +12,7 @@ const gameConfig = {
         velocity: { x: 0, y: 0 },
         width: 45,
         height: 60,
-        speed: 5,
+        speed: 7,
         jumping: false,
         jumpHeight: 9, // Jump height power variable
         crouchHeight: 40

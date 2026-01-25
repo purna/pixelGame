@@ -70,9 +70,7 @@ function updatePlayer(keys, playerVelocity, gravity, isJumping, groundLevel, can
         isJumping = false;
     }
 
-    // Update ground level (keep this local only)
-    groundLevel = canvas.height - player.height;
-
+    // Do NOT override the passed-in groundLevel here — use the world ground provided by the caller.
     // Reset isJumping if player is on ground and not moving upward
     if (player.position.y >= groundLevel - 1 && playerVelocity.y >= 0) {
         isJumping = false;
