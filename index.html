@@ -3,18 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio Platformer Game</title>
+    <title>Moses - Egyptian Platformer</title>
     <link rel="stylesheet" href="css/styles.css">
-   
 </head>
 <body>
-    <div class="portfolio-container">
-        <h1>Moses Game</h1>
+    <div class="portfolio-container dialog_border" id="start-modal" role="dialog" aria-modal="true">
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-tr"></div>
+        <div class="corner corner-bl"></div>
+        <div class="corner corner-br"></div>
+        
+        <h1>MOSES</h1>
         <p>Explore my work through this interactive platformer game!</p>
-        <button id="start-game">Start Game</button>
-
+        <button id="start-game" class="gameButton">Start Game</button>
     </div>
-    <div class="game-container">
+
+    <div class="game-container" id="game-root">
         <div class="collectables-counter">Collectables: <span id="collectables-count">0</span></div>
         <div class="lives-counter">
             <span class="life"><img src="assets/ui/heart.svg" alt="Heart" class="heart-icon"></span>
@@ -23,20 +27,22 @@
         </div>
         <canvas id="game-canvas"></canvas>
     </div>
-    <div id="level-complete" class="level-complete">
+
+    <div id="level-complete" class="level-complete dialog_border" style="display:none;">
         <h2>Level Complete!</h2>
         <p>Great job! Moving to the next level...</p>
     </div>
-    <div id="game-over" class="game-over">
+    <div id="game-over" class="game-over dialog_border" style="display:none;">
         <h2>Game Over!</h2>
         <p>You touched an enemy. Try again!</p>
-        <button id="restart-game">Play Again</button>
+        <button id="restart-game" class="gameButton">Play Again</button>
     </div>
-    <!-- External Libraries -->
+
+    <!-- Keep your game scripts so the canvas/game logic loads in background but only displays after start -->
     <script src="https://cdn.jsdelivr.net/npm/roughjs@4.5.2/bundled/rough.min.js"></script>
     <script src="plugins/howler.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-    <!-- Game Scripts -->
+
     <script src="js/config.js"></script>
     <script src="js/texture-manager.js"></script>
     <script src="js/parallax-manager.js"></script>
@@ -45,5 +51,25 @@
     <script src="js/ink-dialogue.js"></script>
     <script src="js/particle-burst.js" defer></script>
     <script type="module" src="js/game.js"></script>
+
+    <script>
+        // Hide modal and reveal game when Start is clicked; dispatch 'startGame' for game boot logic
+        document.getElementById('start-game').addEventListener('click', function() {
+            const modal = document.getElementById('start-modal');
+            const gameRoot = document.getElementById('game-root');
+            if (modal) modal.style.display = 'none';
+            if (gameRoot) gameRoot.style.display = 'block';
+            // If your game listens for a custom event to begin, this will trigger it
+            window.dispatchEvent(new CustomEvent('startGame'));
+        });
+
+        // Restart button behavior
+        const restartBtn = document.getElementById('restart-game');
+        if (restartBtn) restartBtn.addEventListener('click', function() {
+            window.location.reload();
+        });
+
+        // If the game auto-starts on load, but you want it paused until 'startGame', ensure game.js checks for that event.
+    </script>
 </body>
 </html>

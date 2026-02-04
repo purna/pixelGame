@@ -1,165 +1,259 @@
-body {
-    font-family: Arial, sans-serif;
+/* Main reset and themed modal styles */
+* {
     margin: 0;
     padding: 0;
-    background-color: #f0f0f0;
-    overflow: hidden;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
 }
 
 .portfolio-container {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    pointer-events: auto;
-}
-
-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-.popup {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    z-index: 100;
-}
-
-.popup-content {
-    text-align: center;
-}
-
-.close-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 20px;
-    cursor: pointer;
-}
-
-.game-container {
-    display: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 10;
-    pointer-events: auto;
-}
-
-canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-    border: 1px solid #000;
-    background-color: #fff;
     position: relative;
-    z-index: 10;
-}
-
-/* Explosion canvases created dynamically for short-lived particle effects */
-.explosion-canvas {
-    border: 0 !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    pointer-events: none !important;
-}
-
-.level-complete {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    z-index: 100;
+    background: linear-gradient(135deg, #e8d4b8 0%, #ddc9a3 50%, #d4bb8f 100%);
+    padding: 50px 40px;
+    border-radius: 20px;
+    max-width: 500px;
+    width: 100%;
     text-align: center;
+    box-shadow: 
+        0 0 0 8px rgba(0, 0, 0, 0.3),
+        0 0 0 12px #8b6914,
+        0 0 0 16px rgba(0, 0, 0, 0.3),
+        0 20px 60px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
 }
 
-.collectables-counter {
+/* Hieroglyphic pattern overlay */
+.portfolio-container::before {
+    content: '𓀀 𓀁 𓀂 𓀃 𓁹 𓂀 𓃀 𓃭 𓄿 𓅓 𓆣 𓇋 𓈖 𓉐 𓊪 𓋴 𓌻 𓎛 𓀀 𓀁 𓀂 𓀃 𓁹 𓂀 𓃀 𓃭 𓄿 𓅓 𓆣 𓇋 𓈖 𓉐 𓊪 𓋴 𓌻 𓎛';
     position: absolute;
-    top: 20px;
-    left: 20px;
-    background-color: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 10px 15px;
-    border-radius: 5px;
-    font-family: Arial, sans-serif;
-    font-size: 18px;
-    /* Ensure UI sits above the game canvas */
-    z-index: 1001;
+    inset: 0;
+    font-size: 40px;
+    color: rgba(101, 67, 33, 0.25);
+    line-height: 1.6;
+    word-wrap: break-word;
+    word-break: break-all;
+    pointer-events: none;
+    z-index: 0;
+    padding: 20px;
 }
 
+/* Decorative border pattern */
+.dialog_border {
+    border: 8px solid;
+    border-image: repeating-linear-gradient(
+        45deg,
+        #8b6914 0px,
+        #8b6914 10px,
+        #d4a574 10px,
+        #d4a574 20px,
+        #654321 20px,
+        #654321 30px
+    ) 8;
+}
+
+/* Ensure content sits above the decorative overlay */
+.portfolio-container > * {
+    position: relative;
+    z-index: 1;
+}
+
+h1 {
+    font-size: 3.5em;
+    font-weight: 900;
+    color: #2c1810;
+    margin-bottom: 20px;
+    font-family: 'Papyrus', fantasy, serif;
+    letter-spacing: 5px;
+    animation: logoFloat 3s ease-in-out infinite;
+    position: relative;
+    z-index: 3;
+}
+
+h1::before {
+    content: 'MOSES';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    font-weight: 900;
+    font-family: 'Papyrus', fantasy, serif;
+    letter-spacing: 5px;
+    color: transparent;
+    -webkit-text-stroke: 8px #ffffff;
+    text-stroke: 8px #ffffff;
+    z-index: -1;
+    filter: drop-shadow(6px 6px 0 rgba(0, 0, 0, 0.5))
+            drop-shadow(8px 8px 0 rgba(0, 0, 0, 0.4))
+            drop-shadow(10px 10px 0 rgba(0, 0, 0, 0.3));
+}
+
+h1::after {
+    content: 'MOSES';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    font-weight: 900;
+    font-family: 'Papyrus', fantasy, serif;
+    letter-spacing: 5px;
+    color: transparent;
+    z-index: -2;
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.8),
+                 0 0 50px rgba(255, 215, 0, 0.6),
+                 0 0 70px rgba(255, 215, 0, 0.4);
+}
+
+@keyframes logoFloat {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-10px) scale(1.02); }
+}
+
+h1 img {
+    max-width: 100%;
+    height: auto;
+    filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.4));
+    animation: logoGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes logoGlow {
+    from { filter: drop-shadow(0 5px 15px rgba(255, 215, 0, 0.3)); }
+    to { filter: drop-shadow(0 5px 25px rgba(255, 215, 0, 0.7)); }
+}
+
+p {
+    font-size: 1.2em;
+    color: #2c1810;
+    margin-bottom: 30px;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.3);
+    font-weight: 500;
+    font-family: 'Courier New', 'Courier', monospace;
+    letter-spacing: 1px;
+}
+
+.gameButton{
+    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+    color: white;
+    font-size: 1.4em;
+    font-weight: bold;
+    padding: 15px 50px;
+    border: 4px solid #8b4513;
+    border-radius: 50px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3), inset 0 -3px 0 rgba(0,0,0,0.2), 0 0 30px rgba(255,107,53,0.6);
+    transition: transform 0.2s, box-shadow 0.2s;
+    animation: pulse 2s ease-in-out infinite;
+    position: relative;
+    overflow: hidden;
+    font-family: 'Courier New', 'Courier', monospace;
+}
+
+.gameButton::before { content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; border-radius: 50%; background: rgba(255,255,255,0.3); transform: translate(-50%,-50%); transition: width 0.6s, height 0.6s; }
+.gameButton:hover::before { width: 300px; height: 300px; }
+.gameButton:hover { transform: scale(1.05); box-shadow: 0 8px 25px rgba(0,0,0,0.4), inset 0 -3px 0 rgba(0,0,0,0.2), 0 0 50px rgba(255,107,53,0.9); }
+.gameButton:active { transform: scale(0.98); }
+@keyframes pulse { 0%,100%{ box-shadow: 0 5px 15px rgba(0,0,0,0.3), inset 0 -3px 0 rgba(0,0,0,0.2), 0 0 30px rgba(255,107,53,0.6);} 50%{ box-shadow: 0 5px 20px rgba(0,0,0,0.4), inset 0 -3px 0 rgba(0,0,0,0.2), 0 0 50px rgba(255,107,53,1);} }
+
+/* Decorative corner elements */
+.corner { position: absolute; width: 30px; height: 30px; border: 3px solid #8b6914; z-index: 2; }
+.corner-tl { top: 10px; left: 10px; border-right: none; border-bottom: none; }
+.corner-tr { top: 10px; right: 10px; border-left: none; border-bottom: none; }
+.corner-bl { bottom: 10px; left: 10px; border-right: none; border-top: none; }
+.corner-br { bottom: 10px; right: 10px; border-left: none; border-top: none; }
+
+/* Game UI baseline (hidden until start) */
+.game-container { display: none; position: absolute; inset: 0; z-index: 10; pointer-events: auto; background: #000; }
+
+/* Collectables - unchanged */
+.collectables-counter { position: absolute; top: 20px; left: 20px; background-color: rgba(0,0,0,0.7); color: white; padding: 10px 15px; border-radius: 5px; font-family: Arial, sans-serif; font-size: 18px; z-index: 1001; }
+
+/* Lives counter: make it a small ornamental panel to match the visual language of the modal */
 .lives-counter {
     position: absolute;
     top: 20px;
     right: 20px;
-    background-color: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 8px 15px 4px 15px;
-    border-radius: 5px;
     display: flex;
     gap: 10px;
-    /* Ensure UI sits above the game canvas */
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #e8d4b8 0%, #ddc9a3 100%);
+    color: #2c1810;
+    border: 4px solid transparent;
+    background-image: repeating-linear-gradient(0deg,#8b6914 0px,#8b6914 10px,#d4a574 10px,#d4a574 20px), repeating-linear-gradient(90deg,#8b6914 0px,#8b6914 10px,#d4a574 10px,#d4a574 20px);
+    background-size: 4px 100%, 100% 4px;
+    background-position: 0 0, 0 0;
+    background-repeat: no-repeat;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
     z-index: 1001;
 }
 
-.life {
-    display: inline-block;
-    color: red;
-}
+.life { display: inline-block; }
+.heart-icon { width: 24px; height: 24px; }
+.heart-icon.lost { opacity: 0.25; }
 
-.heart-icon {
-    width: 24px;
-    height: 24px;
-    filter: invert(0);
-    transition: filter 0.3s ease;
-}
+canvas { display: block; width: 100%; height: 100%; border: 1px solid #000; background-color: #fff; position: relative; z-index: 10; }
 
-.heart-icon.lost {
-    filter: invert(1);
-}
-
-#collectables-count {
-    font-weight: bold;
-    color: gold;
-}
-
-.game-over {
+/* Level complete & Game over: use the same visual style as the start modal */
+.level-complete, .game-over {
     display: none;
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    z-index: 100;
+    transform: translate(-50%,-50%);
+    background: linear-gradient(135deg, #e8d4b8 0%, #ddc9a3 50%, #d4bb8f 100%);
+    padding: 40px 30px;
+    border-radius: 20px;
+    max-width: 520px;
+    width: calc(100% - 40px);
     text-align: center;
+    box-shadow: 0 0 0 8px rgba(0, 0, 0, 0.3), 0 0 0 12px #8b6914, 0 0 0 16px rgba(0,0,0,0.3), 0 20px 60px rgba(0,0,0,0.5);
+    z-index: 2000;
+}
+
+.level-complete::before, .game-over::before {
+    /* reuse a subtle hieroglyph overlay but less dense */
+    content: '𓀀 𓀁 𓀂 𓀃 𓁹 𓂀 𓃀 𓃭';
+    position: absolute;
+    inset: 10px;
+    font-size: 28px;
+    color: rgba(101,67,33,0.08);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.level-complete > *, .game-over > * { position: relative; z-index: 1; }
+
+.level-complete h2, .game-over h2 { font-size: 2em; margin-bottom: 10px; color:#2c1810; }
+.level-complete p, .game-over p { color:#2c1810; }
+
+.level-complete button, .game-over button {
+    margin-top: 16px;
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 4px solid #8b4513;
+    background: linear-gradient(135deg,#ff6b35 0%, #f7931e 100%);
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#collectables-count { font-weight: bold; color: gold; }
+
+/* Small screens */
+@media (max-width: 520px) {
+    .portfolio-container { padding: 30px 20px; }
+    h1 { font-size: 2.2em; }
+    .portfolio-container::before { font-size: 28px; }
+    .level-complete, .game-over { width: calc(100% - 24px); padding: 24px; }
 }
