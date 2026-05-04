@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Elms+Sans:wght@400;700&family=Noto+Serif:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -32,6 +33,7 @@
             <span class="life"><img src="assets/ui/heart.svg" alt="Heart" class="heart-icon"></span>
             <span class="life"><img src="assets/ui/heart.svg" alt="Heart" class="heart-icon"></span>
         </div>
+        <button id="sound-toggle" class="sound-button" title="Toggle Sound"><i class="fa-solid fa-volume-high"></i></button>
         <canvas id="game-canvas"></canvas>
     </div>
 
@@ -74,6 +76,60 @@
         const restartBtn = document.getElementById('restart-game');
         if (restartBtn) restartBtn.addEventListener('click', function() {
             window.location.reload();
+        });
+
+        // Sound toggle functionality - simple and reliable
+        function initializeSoundToggle() {
+            const soundToggleBtn = document.getElementById('sound-toggle');
+            if (!soundToggleBtn) {
+                console.error('Sound toggle button not found');
+                return;
+            }
+            
+            console.log('Sound toggle button found:', soundToggleBtn);
+            
+            // Remove any existing listeners to avoid duplicates
+            const newBtn = soundToggleBtn.cloneNode(true);
+            soundToggleBtn.parentNode.replaceChild(newBtn, soundToggleBtn);
+            
+            let isMuted = false;
+            
+            newBtn.addEventListener('click', function() {
+                isMuted = !isMuted;
+                console.log('Sound toggle clicked, muting:', isMuted);
+                
+                // Use Howler directly
+                if (typeof Howler !== 'undefined') {
+                    Howler.mute(isMuted);
+                    console.log('Howler.mute called successfully with:', isMuted);
+                } else {
+                    console.error('Howler is not defined');
+                }
+                
+                // Update button appearance
+                if (isMuted) {
+                    newBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
+                    newBtn.classList.add('muted');
+                } else {
+                    newBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+                    newBtn.classList.remove('muted');
+                }
+            });
+            
+            console.log('Sound toggle button initialized');
+        }
+        
+        // Initialize when start game is clicked
+        document.getElementById('start-game').addEventListener('click', function() {
+            const modal = document.getElementById('start-modal');
+            const gameRoot = document.getElementById('game-root');
+            if (modal) modal.style.display = 'none';
+            if (gameRoot) gameRoot.style.display = 'block';
+            // If your game listens for a custom event to begin, this will trigger it
+            window.dispatchEvent(new CustomEvent('startGame'));
+            
+            // Initialize sound toggle
+            initializeSoundToggle();
         });
 
         // If the game auto-starts on load, but you want it paused until 'startGame', ensure game.js checks for that event.

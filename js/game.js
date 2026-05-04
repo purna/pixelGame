@@ -429,6 +429,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function initGame() {
         loadSVGLevel(currentLevel);
         uiManager.setCollectablesCollected(collectablesCollected);
+        // Start background music
+        if (window.audioManager) {
+            window.audioManager.playBackgroundMusic();
+        }
     }
 
     // Start game
@@ -443,6 +447,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         initGame();
         animate();
+        
+        // Dispatch startGame event for other listeners (like sound toggle)
+        window.dispatchEvent(new CustomEvent('startGame'));
     });
 
     // Game loop
@@ -895,6 +902,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Helper: show game over dialog with restart button
         function showGameOverDialog() {
             if (document.getElementById('game-over-dialog')) return;
+            // Stop background music when game over
+            if (window.audioManager) {
+                window.audioManager.stopBackgroundMusic();
+            }
             const overlay = document.createElement('div');
             overlay.id = 'game-over-dialog';
             overlay.className = 'game-over';
@@ -932,6 +943,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 try { setupEventListeners(); } catch (e) {}
                 // Restart animation loop
                 animate();
+                
+                // Restart background music when game restarts
+                if (window.audioManager) {
+                    window.audioManager.playBackgroundMusic();
+                }
             });
             box.appendChild(title); box.appendChild(msg); box.appendChild(btn);
             overlay.appendChild(box);

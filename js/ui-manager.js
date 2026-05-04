@@ -115,12 +115,16 @@ class UIManager {
     
     // Level complete notification
     showLevelComplete() {
+        // Pause background music when level is complete
+        if (window.audioManager) {
+            window.audioManager.stopBackgroundMusic();
+        }
         const levelComplete = document.getElementById('level-complete');
         if (levelComplete) {
             levelComplete.style.display = 'block';
         }
     }
-    
+
     hideLevelComplete() {
         const levelComplete = document.getElementById('level-complete');
         if (levelComplete) {

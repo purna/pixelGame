@@ -5,6 +5,7 @@ class AudioManager {
     constructor() {
         this.sounds = {};
         this.initialized = false;
+        this.backgroundMusic = null;
     }
 
     init() {
@@ -16,12 +17,11 @@ class AudioManager {
         const localCollectableCandidates = ['assets/audio/collectable.mp3'];
         const localCheckpointCandidates = ['assets/audio/checkpoint.mp3'];
         const localNpcCandidates = ['assets/audio/npc.mp3'];
-
+        
         const collectableSrcFallback = 'assets/audio/collectable.mp3';
         const checkpointSrcFallback = 'assets/audio/checkpoint.mp3';
         const npcSrcFallback = 'assets/audio/npc.mp3';
-
-
+        
         // Try each local candidate in order; on error try next, finally fall back to CDN.
         function tryCreateHowlWithCandidates(key, candidates, fallback, volume) {
             const tryNext = (idx) => {
@@ -44,6 +44,16 @@ class AudioManager {
         tryCreateHowlWithCandidates.call(this, 'collectable', localCollectableCandidates, collectableSrcFallback, 0.5);
         tryCreateHowlWithCandidates.call(this, 'checkpoint', localCheckpointCandidates, checkpointSrcFallback, 0.7);
         tryCreateHowlWithCandidates.call(this, 'npc', localNpcCandidates, npcSrcFallback, 0.6);
+
+        // Initialize background music
+        this.backgroundMusic = new Howl({
+            src: ['assets/audio/background.mp3'],
+            volume: 0.3,
+            loop: true,
+            preload: true,
+            onload: () => console.log('Background music loaded'),
+            onloaderror: () => console.error('Failed to load background music')
+        });
 
         this.initialized = true;
         console.log('AudioManager initialized successfully');
@@ -71,6 +81,23 @@ class AudioManager {
             return;
         }
         this.sounds.npc.play();
+    }
+
+    // Background music controls
+    playBackgroundMusic() {
+        if (!this.initialized) {
+            console.warn('AudioManager not initialized');
+            return;
+        }
+        this.backgroundMusic.play();
+    }
+
+    stopBackgroundMusic() {
+        if (!this.initialized) {
+            console.warn('AudioManager not initialized');
+            return;
+        }
+        this.backgroundMusic.stop();
     }
 
     // Global access to audio manager
