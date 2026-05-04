@@ -53,6 +53,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Counter used to emit periodic running dust while moving
     let runDustCounter = 0;
 
+    // Squash and stretch effect state
+    let playerScaleX = 1;
+    let playerScaleY = 1;
+    let targetScaleX = 1;
+    let targetScaleY = 1;
+
     // Initialize player
     initPlayer(gameConfig.player);
     // Ensure player input / movement is enabled by default
@@ -271,7 +277,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         width: parseFloat(element.getAttribute('width')) * scale,
                         height: parseFloat(element.getAttribute('height')) * scale,
                         speed: gameConfig.enemy.speed,
-                        direction: 1
+                        direction: 1,
+                        velocityY: 0
                     });
                 });
 
@@ -688,29 +695,62 @@ document.addEventListener('DOMContentLoaded', () => {
         const playerDrawY = Math.round(player.position.y - camera.y) - playerVisualOffsetY;
         // Determine facing: prefer input keys, fall back to horizontal velocity, default to facing right (1)
         const facing = (keys.rightKey && keys.rightKey.pressed) ? 1 : ((keys.leftKey && keys.leftKey.pressed) ? -1 : (playerVelocity.x < 0 ? -1 : (playerVelocity.x > 0 ? 1 : 1)));
+
+        // Calculate squash and stretch targets based on player state
+        const absVelX = Math.abs(playerVelocity.x);
+        const absVelY = Math.abs(playerVelocity.y);
+
+        const moving = (keys.rightKey && keys.rightKey.pressed) || (keys.leftKey && keys.leftKey.pressed);
+
+        // Vertical squash/stretch: stretch when falling fast, squash when landing or moving fast horizontally
+        if (absVelY > 3 && playerVelocity.y > 0) {
+            // Falling fast - stretch vertically
+            targetScaleY = 1.5;
+            targetScaleX = 0.8;
+        } else if (!isJumping && previousIsJumping && absVelY > 1) {
+            // Just landed - squash vertically
+            targetScaleY = 0.6;
+            targetScaleX = 1.3;
+        } else if (!isJumping && moving && absVelX > 2) {
+            // Running fast on ground - slight squash
+            targetScaleY = 0.85;
+            targetScaleX = 1.15;
+        } else {
+            // Normal/idle state
+            targetScaleY = 1;
+            targetScaleX = 1;
+        }
+
+        // Smoothly interpolate scale values
+        playerScaleX += (targetScaleX - playerScaleX) * 0.2;
+        playerScaleY += (targetScaleY - playerScaleY) * 0.2;
+
         if (playerSvgLoaded) {
             ctx.save();
+            // Apply squash/stretch transform around player center
+            const centerX = playerDrawX + player.width / 2;
+            const centerY = playerDrawY + player.height / 2;
+            ctx.translate(centerX, centerY);
+            ctx.scale(playerScaleX, playerScaleY);
             if (facing === -1) {
-                // Flip horizontally around player's top-left corner
-                ctx.translate(playerDrawX + player.width, playerDrawY);
+                // Flip horizontally (already at center, so flip around center)
                 ctx.scale(-1, 1);
-                ctx.drawImage(playerSvg, 0, 0, player.width, player.height);
-            } else {
-                ctx.drawImage(playerSvg, playerDrawX, playerDrawY, player.width, player.height);
             }
+            ctx.drawImage(playerSvg, -player.width / 2, -player.height / 2, player.width, player.height);
             ctx.restore();
             // Removed Rough.js outline for player per request — keeps sprite clean without extra border
         } else {
             // Fallback to blue rectangle if SVG not loaded yet
             ctx.save();
             ctx.fillStyle = 'blue';
+            const centerX = playerDrawX + player.width / 2;
+            const centerY = playerDrawY + player.height / 2;
+            ctx.translate(centerX, centerY);
+            ctx.scale(playerScaleX, playerScaleY);
             if (facing === -1) {
-                ctx.translate(playerDrawX + player.width, playerDrawY);
-                ctx.scale(-1,1);
-                ctx.fillRect(0, 0, player.width, player.height);
-            } else {
-                ctx.fillRect(playerDrawX, playerDrawY, player.width, player.height);
+                ctx.scale(-1, 1);
             }
+            ctx.fillRect(-player.width / 2, -player.height / 2, player.width, player.height);
             ctx.restore();
             // No Rough.js outline for the fallback player either
         }
@@ -745,7 +785,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Emit small periodic dust while running on the ground
         runDustCounter++;
-        const moving = (keys.rightKey && keys.rightKey.pressed) || (keys.leftKey && keys.leftKey.pressed);
         if (!isJumping && moving && runDustCounter % 12 === 0) {
             try {
                 const rect = canvas.getBoundingClientRect();
@@ -858,16 +897,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (document.getElementById('game-over-dialog')) return;
             const overlay = document.createElement('div');
             overlay.id = 'game-over-dialog';
-            Object.assign(overlay.style, {
-                position: 'fixed', top: '0', left: '0', right: '0', bottom: '0',
-                background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999
-            });
+            overlay.className = 'game-over';
             const box = document.createElement('div');
-            Object.assign(box.style, { background: '#fff', padding: '24px', borderRadius: '8px', textAlign: 'center', minWidth: '280px' });
             const title = document.createElement('h2'); title.textContent = 'Game Over';
             const msg = document.createElement('p'); msg.textContent = 'You have lost all your lives.';
             const btn = document.createElement('button'); btn.textContent = 'Restart';
-            Object.assign(btn.style, { padding: '8px 16px', fontSize: '16px', marginTop: '12px', cursor: 'pointer' });
             btn.addEventListener('click', () => {
                 overlay.remove();
                 // Attempt to reset lives display if UI manager exposes helpers
@@ -899,12 +933,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Restart animation loop
                 animate();
             });
-            box.appendChild(title); box.appendChild(msg); box.appendChild(btn); overlay.appendChild(box);
+            box.appendChild(title); box.appendChild(msg); box.appendChild(btn);
+            overlay.appendChild(box);
             document.body.appendChild(overlay);
         }
 
         // Update enemies (they operate in world coordinates)
-        updateEnemies(enemies, gameConfig.enemy, canvas);
+        updateEnemies(enemies, gameConfig.enemy, platforms, camera);
 
         // Update box physics
         updateBoxes();
