@@ -49,8 +49,20 @@ class UIManager {
     updateLivesDisplay() {
         const livesCounter = document.querySelector('.lives-counter');
         if (livesCounter) {
+            // Update lives count
+            const livesCount = livesCounter.querySelector('#lives-count');
+            if (livesCount) {
+                livesCount.textContent = this.lives;
+            }
+            
             // Clear existing hearts
             livesCounter.innerHTML = '';
+            
+            // Add lives label with count
+            const livesLabel = document.createElement('span');
+            livesLabel.className = 'lives-label';
+            livesLabel.innerHTML = `Lives <span id="lives-count">${this.lives}</span>`;
+            livesCounter.appendChild(livesLabel);
             
             // Add all hearts (3 total) in reverse order, applying 'lost' class to those beyond current lives
             for (let i = 2; i >= 0; i--) {

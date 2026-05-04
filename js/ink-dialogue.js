@@ -8,15 +8,15 @@
 
     // Inject CSS for the dialogue UI
     const css = `
-#ink-dialogue-container { position: fixed; left: 50%; transform: translateX(-50%); bottom: 5%; width: min(1100px, 95%); max-height: 45%; background: rgba(10,10,10,0.95); color: #fff; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.6); display: none; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; z-index: 9999; }
+#ink-dialogue-container { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(1100px, 95%); max-height: 80vh; background: rgba(10,10,10,0.95); color: #fff; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.6); display: none; font-family: 'Elms Sans', sans-serif; z-index: 9999; }
 #ink-dialogue-inner { display: flex; gap: 16px; padding: 18px; align-items: flex-start; }
 #ink-dialogue-portrait { width: 140px; height: 140px; background: rgba(255,255,255,0.03); border-radius: 8px; overflow: hidden; flex: 0 0 140px; display: flex; align-items: center; justify-content: center; }
 #ink-dialogue-portrait img { width: 100%; height: 100%; object-fit: cover; display: block; }
 #ink-dialogue-body { flex: 1; display: flex; flex-direction: column; gap: 8px; }
-#ink-dialogue-speaker { font-weight: 700; letter-spacing: 0.4px; font-size: 18px; color: #ffdca6; }
-#ink-dialogue-text { font-size: 16px; line-height: 1.45; max-height: 10.2em; overflow-y: auto; }
-#ink-dialogue-choices { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
-.ink-choice-btn { display: block; width: 100%; background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); color: #fff; border: 1px solid rgba(255,255,255,0.08); padding: 12px 14px; border-radius: 10px; cursor: pointer; text-align: left; white-space: normal; font-weight: 600; font-size: 15px; transition: transform .12s ease, box-shadow .12s ease, background .12s ease; box-shadow: none; }
+#ink-dialogue-speaker { font-weight: 700; letter-spacing: 0.4px; font-size: 18px; color: #ffdca6; font-family: 'Noto Serif', serif; }
+#ink-dialogue-text { font-size: 16px; line-height: 1.45; max-height: 10.2em; overflow-y: auto; font-family: 'Elms Sans', sans-serif; }
+#ink-dialogue-choices { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; font-family: 'Elms Sans', sans-serif; }
+.ink-choice-btn { display: block; width: 100%; background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); color: #fff; border: 1px solid rgba(255,255,255,0.08); padding: 12px 14px; border-radius: 10px; cursor: pointer; text-align: left; white-space: normal; font-weight: 600; font-size: 15px; transition: transform .12s ease, box-shadow .12s ease, background .12s ease; box-shadow: none; font-family: 'Elms Sans', sans-serif; }
 .ink-choice-btn:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)); }
 .ink-choice-btn:focus { outline: 2px solid rgba(255,220,166,0.15); outline-offset: 2px; }
 /* Small label for choice metadata (if needed) */
@@ -24,13 +24,13 @@
 
 #ink-dialogue-controls { display: flex; gap: 8px; align-items: center; justify-content: space-between; margin-top: 6px; }
 #ink-dialogue-progress { display: none; }
-#ink-dialogue-next { background: linear-gradient(180deg, #ffdca6, #f2c57a); color: #111; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 700; }
+#ink-dialogue-next { background: linear-gradient(180deg, #ffdca6, #f2c57a); color: #111; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 700; font-family: 'Elms Sans', sans-serif; }
 #ink-dialogue-next:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.25); }
 /* Close X in the top-right corner */
 #ink-dialogue-x { position: absolute; top: 10px; right: 12px; background: transparent; color: #fff; border: none; padding: 6px 8px; font-size: 20px; line-height: 1; cursor: pointer; border-radius: 6px; }
 #ink-dialogue-x:hover { transform: translateY(-2px); }
 /* Style choice buttons like the Next button */
-.ink-choice-btn { background: linear-gradient(180deg, #ffdca6, #f2c57a); color: #111; border: none; padding: 10px 14px; border-radius: 8px; font-weight: 700; box-shadow: 0 6px 18px rgba(0,0,0,0.15); transition: transform .12s ease, box-shadow .12s ease, background .12s ease; }
+.ink-choice-btn { background: linear-gradient(180deg, #ffdca6, #f2c57a); color: #111; border: none; padding: 10px 14px; border-radius: 8px; font-weight: 700; box-shadow: 0 6px 18px rgba(0,0,0,0.15); transition: transform .12s ease, box-shadow .12s ease, background .12s ease; font-family: 'Elms Sans', sans-serif; }
 .ink-choice-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.25); background: linear-gradient(180deg, #ffdca6, #e6b35a); color: #111; }
 .ink-choice-btn:hover .choice-meta { color: rgba(17,17,17,0.9); }
 .ink-choice-btn:focus { outline: 2px solid rgba(0,0,0,0.12); outline-offset: 2px; }
@@ -780,6 +780,10 @@
     window.inkDialogue.startStoryFromPath = startStoryFromPath;
     window.inkDialogue.playSoundFromPack = playSoundFromPack; // expose for debug/other usage
     window.inkDialogue.loadSoundPack = loadSoundPack;
+    // Check if dialogue is currently active
+    window.inkDialogue.isDialogueActive = function() { return storyInstance !== null; };
+    // Get current story instance (for advanced use)
+    window.inkDialogue.getStoryInstance = function() { return storyInstance; };
     // allowRepeat: if true, callers (e.g. game) can opt to let NPCs be triggered repeatedly
     if (typeof window.inkDialogue.allowRepeat === 'undefined') window.inkDialogue.allowRepeat = false;
     window.inkDialogue.setAllowRepeat = function(v) { window.inkDialogue.allowRepeat = !!v; };

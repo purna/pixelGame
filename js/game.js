@@ -939,7 +939,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Update enemies (they operate in world coordinates)
-        updateEnemies(enemies, gameConfig.enemy, platforms, camera);
+        // Pause enemies when dialogue is active
+        const isDialogueActive = window.inkDialogue && typeof window.inkDialogue.isDialogueActive === 'function' && window.inkDialogue.isDialogueActive();
+        if (!isDialogueActive) {
+            updateEnemies(enemies, gameConfig.enemy, platforms, camera);
+        }
 
         // Update box physics
         updateBoxes();
@@ -1119,46 +1123,49 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Check for NPCs
-        npcs.forEach((npc, index) => {
-            const showLayer = npc.showLayer;
+        // Check for NPCs - skip when dialogue is active
+        const isDialogueActive = window.inkDialogue && typeof window.inkDialogue.isDialogueActive === 'function' && window.inkDialogue.isDialogueActive();
+        if (!isDialogueActive) {
+            npcs.forEach((npc, index) => {
+                const showLayer = npc.showLayer;
 
-            if (
-                player.position.x + player.width > showLayer.x &&
-                player.position.x < showLayer.x + showLayer.width &&
-                player.position.y + player.height > showLayer.y &&
-                player.position.y < showLayer.y + showLayer.height
-            ) {
-                // Determine if this NPC should show its interaction hint based on level-level repeat config
-                const counterKey = `${currentLevel}:${index}`;
-                const levelEntries = gameConfig.npcMessages[currentLevel] || [];
-                let levelRepeat = null;
-                if (levelEntries.length > 0 && levelEntries[0] && typeof levelEntries[0] === 'object' && levelEntries[0].repeat && !levelEntries[0].path) {
-                    levelRepeat = levelEntries[0].repeat;
-                }
+                if (
+                    player.position.x + player.width > showLayer.x &&
+                    player.position.x < showLayer.x + showLayer.width &&
+                    player.position.y + player.height > showLayer.y &&
+                    player.position.y < showLayer.y + showLayer.height
+                ) {
+                    // Determine if this NPC should show its interaction hint based on level-level repeat config
+                    const counterKey = `${currentLevel}:${index}`;
+                    const levelEntries = gameConfig.npcMessages[currentLevel] || [];
+                    let levelRepeat = null;
+                    if (levelEntries.length > 0 && levelEntries[0] && typeof levelEntries[0] === 'object' && levelEntries[0].repeat && !levelEntries[0].path) {
+                        levelRepeat = levelEntries[0].repeat;
+                    }
 
-                let allowedProximity = true;
-                if (levelRepeat) {
-                    const seen = npcRepeatCounters.get(counterKey) || 0;
-                    const type = levelRepeat.type || 'times';
-                    const count = typeof levelRepeat.count === 'number' ? levelRepeat.count : 1;
-                    if (type === 'once') allowedProximity = seen < 1;
-                    else if (type === 'times') allowedProximity = seen < count;
-                    else if (type === 'forever') allowedProximity = true;
-                }
+                    let allowedProximity = true;
+                    if (levelRepeat) {
+                        const seen = npcRepeatCounters.get(counterKey) || 0;
+                        const type = levelRepeat.type || 'times';
+                        const count = typeof levelRepeat.count === 'number' ? levelRepeat.count : 1;
+                        if (type === 'once') allowedProximity = seen < 1;
+                        else if (type === 'times') allowedProximity = seen < count;
+                        else if (type === 'forever') allowedProximity = true;
+                    }
 
-                // Only show the interaction hint when allowed by repeat rules
-                if (allowedProximity) {
-                    npc.showHideLayer = true;
+                    // Only show the interaction hint when allowed by repeat rules
+                    if (allowedProximity) {
+                        npc.showHideLayer = true;
+                    } else {
+                        npc.showHideLayer = false;
+                    }
                 } else {
+                    // When player moves away hide the hint
+                    // Do not mutate repeat counters here
                     npc.showHideLayer = false;
                 }
-            } else {
-                // When player moves away hide the hint
-                // Do not mutate repeat counters here
-                npc.showHideLayer = false;
-            }
-        });
+            });
+        }
     }
 
     document.addEventListener('keyup', (e) => {
@@ -1219,6 +1226,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Check for 'I' key press to show NPC dialog
         if (e.key === 'i' || e.key === 'I') {
+            // Don't open dialogue if one is already active
+            if (window.inkDialogue && typeof window.inkDialogue.isDialogueActive === 'function' && window.inkDialogue.isDialogueActive()) {
+                return;
+            }
             // Find the first NPC with showHideLayer true
             const activeNPC = npcs.find(npc => npc.showHideLayer);
             if (activeNPC) {

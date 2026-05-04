@@ -6,7 +6,7 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Elms Sans', sans-serif;
     background: #ffffff;
     display: flex;
     justify-content: center;
@@ -26,9 +26,41 @@ body {
     box-shadow: 
         0 0 0 8px rgba(0, 0, 0, 0.3),
         0 0 0 12px #8b6914,
-        0 0 0 16px rgba(0, 0, 0, 0.3),
-        0 20px 60px rgba(0, 0, 0, 0.5);
+        0 0 0 16px rgba(0,0,0,0.3),
+        0 20px 60px rgba(0,0,0,0.5);
     overflow: hidden;
+}
+
+.skip-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.2);
+    color: #2c1810;
+    border: 2px solid #8b6914;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-family: 'Elms Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.2s ease;
+}
+
+.skip-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.skip-button:focus {
+    outline: 3px solid #ffdca6;
+    outline-offset: 2px;
+}
+
+.skip-button:active {
+    transform: translateY(0);
 }
 
 /* Hieroglyphic pattern overlay */
@@ -71,7 +103,7 @@ h1 {
     font-weight: 900;
     color: #2c1810;
     margin-bottom: 20px;
-    font-family: 'Papyrus', fantasy, serif;
+    font-family: 'Noto Serif', serif;
     letter-spacing: 5px;
     animation: logoFloat 3s ease-in-out infinite;
     position: relative;
@@ -85,7 +117,7 @@ h1::before {
     top: 0;
     width: 100%;
     font-weight: 900;
-    font-family: 'Papyrus', fantasy, serif;
+    font-family: 'Noto Serif', serif;
     letter-spacing: 5px;
     color: transparent;
     -webkit-text-stroke: 8px #ffffff;
@@ -103,7 +135,7 @@ h1::after {
     top: 0;
     width: 100%;
     font-weight: 900;
-    font-family: 'Papyrus', fantasy, serif;
+    font-family: 'Noto Serif', serif;
     letter-spacing: 5px;
     color: transparent;
     z-index: -2;
@@ -135,7 +167,7 @@ p {
     margin-bottom: 30px;
     text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.3);
     font-weight: 500;
-    font-family: 'Courier New', 'Courier', monospace;
+    font-family: 'Elms Sans', sans-serif;
     letter-spacing: 1px;
 }
 
@@ -155,7 +187,7 @@ p {
     animation: pulse 2s ease-in-out infinite;
     position: relative;
     overflow: hidden;
-    font-family: 'Courier New', 'Courier', monospace;
+    font-family: 'Elms Sans', sans-serif;
 }
 
 .gameButton::before { content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; border-radius: 50%; background: rgba(255,255,255,0.3); transform: translate(-50%,-50%); transition: width 0.6s, height 0.6s; }
@@ -175,7 +207,18 @@ p {
 .game-container { display: none; position: absolute; inset: 0; z-index: 10; pointer-events: auto; background: #000; }
 
 /* Collectables - unchanged */
-.collectables-counter { position: absolute; top: 20px; left: 20px; background-color: rgba(0,0,0,0.7); color: white; padding: 10px 15px; border-radius: 5px; font-family: Arial, sans-serif; font-size: 18px; z-index: 1001; }
+.collectables-counter { position: absolute; top: 20px; left: 20px; background-color: rgba(0,0,0,0.7); color: white; padding: 10px 15px; border-radius: 5px; font-family: 'Elms Sans', sans-serif; font-size: 18px; z-index: 1001; display: flex; align-items: center; gap: 8px; }
+.collectables-label { font-weight: 600; }
+
+.coin-icon { width: 24px; height: 24px; animation: spin3d 2s linear infinite; filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.8)); transform-style: preserve-3d; perspective: 500px; }
+@keyframes spin3d { from { transform: rotateY(0deg) rotateX(15deg); } to { transform: rotateY(360deg) rotateX(15deg); } }
+
+.collectables-label, .lives-label {
+    visibility: hidden;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
 
 /* Lives counter: polished ornamental panel with professional game UI styling */
 .lives-counter {
@@ -187,27 +230,13 @@ p {
     align-items: center;
     padding: 12px 18px;
     border-radius: 14px;
-    background: linear-gradient(135deg, #3a2415 0%, #2a1a0f 50%, #1f150d 100%);
     color: #f4d8a8;
-    border: 3px solid;
-    border-image: linear-gradient(135deg, #8b6914, #d4a574, #8b6914) 1;
-    box-shadow: 
-        0 4px 15px rgba(0, 0, 0, 0.6),
-        0 0 20px rgba(139, 105, 20, 0.3),
-        inset 0 1px 0 rgba(255, 215, 0, 0.1),
-        inset 0 -1px 0 rgba(0, 0, 0, 0.3);
     z-index: 1001;
-    backdrop-filter: blur(4px);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .lives-counter:hover {
     transform: translateY(-2px);
-    box-shadow: 
-        0 6px 20px rgba(0, 0, 0, 0.7),
-        0 0 30px rgba(139, 105, 20, 0.4),
-        inset 0 1px 0 rgba(255, 215, 0, 0.15),
-        inset 0 -1px 0 rgba(0, 0, 0, 0.3);
 }
 
 .lives-label {
@@ -238,9 +267,10 @@ p {
 }
 
 .heart-icon.lost { 
-    opacity: 0.15; 
+    opacity: 0.5; 
     transform: scale(0.8);
-    filter: grayscale(100%) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
+    filter: grayscale(100%) drop-shadow(0 2px 3px rgba(0, 0, 0, 0.5));
+    color: #000;
 }
 
 .heart-icon:not(.lost):hover {

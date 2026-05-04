@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Moses - Egyptian Platformer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Elms+Sans:wght@400;700&family=Noto+Serif:wght@700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -19,9 +22,12 @@
     </div>
 
     <div class="game-container" id="game-root">
-        <div class="collectables-counter">Collectables: <span id="collectables-count">0</span></div>
+        <div class="collectables-counter">
+            <span class="collectables-label">Collectables: </span>
+            <img src="assets/ui/coins.svg" alt="Coins" class="coin-icon">
+            <span id="collectables-count">0</span></div>
         <div class="lives-counter">
-            <span class="lives-label">Lives</span>
+            <span class="lives-label">Lives <span id="lives-count">3</span></span>
             <span class="life"><img src="assets/ui/heart.svg" alt="Heart" class="heart-icon"></span>
             <span class="life"><img src="assets/ui/heart.svg" alt="Heart" class="heart-icon"></span>
             <span class="life"><img src="assets/ui/heart.svg" alt="Heart" class="heart-icon"></span>
@@ -35,7 +41,7 @@
     </div>
     <div id="game-over" class="game-over dialog_border" style="display:none;">
         <h2>Game Over!</h2>
-        <p>You touched an enemy. Try again!</p>
+        <p>You have lost all your lives. Try again!</p>
         <button id="restart-game" class="gameButton">Play Again</button>
     </div>
 
