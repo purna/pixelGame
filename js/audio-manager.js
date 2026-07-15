@@ -121,4 +121,4 @@ class AudioManager {
 
 // Initialize audio manager when script loads
 window.audioManager = new AudioManager();
-audioManager.init();
+window.audioManager.init();

@@ -86,8 +86,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let collectables = [...gameConfig.elements.collectables];
     let enemies = [...gameConfig.elements.enemies];
 
-    // Box physics - add velocity to each box
+    // Box physics - velocity array OR Matter.js bodies
     let boxVelocities = [];
+    let platformBodies = []; // Matter.js bodies for platforms
+    let matterEnabled = false;
+    let matterEngine = null;
+    let matterWorld = null;
+    let boxBodies = []; // Matter.js bodies for boxes
+    let matterBoxes = []; // Subset of boxes that use Matter.js
 
     // Texture manager
     let textureManager;
@@ -176,22 +182,53 @@ document.addEventListener('DOMContentLoaded', () => {
                     camera.y = Math.max(0, Math.min(player.position.y - canvas.height / 2, Math.max(0, camera.levelHeight - canvas.height)));
                 }
 
-                // Parse platforms
-                platforms = [];
-                const platformElements = svgDoc.querySelectorAll('#platforms rect');
-                platformElements.forEach(element => {
-                    platforms.push({
-                        position: {
-                            x: parseFloat(element.getAttribute('x')) * scale,
-                            y: parseFloat(element.getAttribute('y')) * scale
-                        },
-                        width: parseFloat(element.getAttribute('width')) * scale,
-                        height: parseFloat(element.getAttribute('height')) * scale
-                    });
-                });
+                 // Parse platforms
+                 platforms = [];
+                 platformBodies = [];
+                 const platformElements = svgDoc.querySelectorAll('#platforms rect');
+                 platformElements.forEach(element => {
+                     const x = parseFloat(element.getAttribute('x')) * scale;
+                     const y = parseFloat(element.getAttribute('y')) * scale;
+                     const width = parseFloat(element.getAttribute('width')) * scale;
+                     const height = parseFloat(element.getAttribute('height')) * scale;
+                     
+                     platforms.push({
+                         position: { x, y },
+                         width,
+                         height
+});
+                      
+                      // Create Matter.js body for platforms (static)
+                      if (typeof Matter !== 'undefined') {
+                          const { Bodies } = Matter;
+                          const body = Bodies.rectangle(x + width/2, y + height/2, width, height, {
+                              isStatic: true,
+                              restitution: 0.2,
+                              friction: 0.8,
+                              label: 'platform'
+                          });
+                          platformBodies.push(body);
+                      } else {
+                          platformBodies.push(null);
+                      }
+                  });
 
-                // Parse collectables
-                collectables = [];
+                  // Add all Matter.js bodies to the world
+                  if (typeof Matter !== 'undefined' && matterEngine && matterWorld) {
+                      const { World } = Matter;
+                      // Add box bodies
+                      const validBoxBodies = boxBodies.filter(body => body !== null);
+                      // Add platform bodies
+                      const validPlatformBodies = platformBodies.filter(body => body !== null);
+                      const allBodies = [...validBoxBodies, ...validPlatformBodies];
+                      
+                      if (allBodies.length > 0) {
+                          World.add(matterWorld, allBodies);
+                      }
+                  }
+
+                 // Parse collectables
+                 collectables = [];
                 const collectableElements = svgDoc.querySelectorAll('#collectables rect');
                 collectableElements.forEach(element => {
                     collectables.push({
@@ -218,23 +255,61 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 });
 
-                // Parse boxes
-                boxes = [];
-                const boxElements = svgDoc.querySelectorAll('#boxes rect');
-                boxElements.forEach((element, index) => {
-                    boxes.push({
-                        position: {
-                            x: parseFloat(element.getAttribute('x')) * scale,
-                            y: parseFloat(element.getAttribute('y')) * scale
-                        },
-                        width: parseFloat(element.getAttribute('width')) * scale,
-                        height: parseFloat(element.getAttribute('height')) * scale,
-                        velocity: { x: 0, y: 0 } // Add velocity for physics
-                    });
+                 // Parse boxes
+                 boxes = [];
+                 boxBodies = [];
+                 matterBoxes = [];
+                 const boxElements = svgDoc.querySelectorAll('#boxes rect');
+                 
+                 // Check if the boxes group has the 'matter' class
+                 const boxesGroup = svgDoc.querySelector('#boxes');
+                 const groupHasMatter = boxesGroup && boxesGroup.classList.contains('matter');
+                 
+                 boxElements.forEach((element, index) => {
+                     const x = parseFloat(element.getAttribute('x')) * scale;
+                     const y = parseFloat(element.getAttribute('y')) * scale;
+                     const width = parseFloat(element.getAttribute('width')) * scale;
+                     const height = parseFloat(element.getAttribute('height')) * scale;
+                     
+                     boxes.push({
+                         position: { x, y },
+                         width,
+                         height,
+                         velocity: { x: 0, y: 0 }
+                     });
 
-                    // Initialize box velocity
-                    boxVelocities[index] = { x: 0, y: 0 };
-                });
+                     // Initialize box velocity for custom physics
+                     boxVelocities[index] = { x: 0, y: 0 };
+
+                     // Check if this box should use Matter.js (group or element has 'matter' class)
+                     const shouldUseMatter = groupHasMatter || element.classList.contains('matter');
+                     
+                     // Create Matter.js body if matter class is enabled AND Matter.js is available
+                     if (shouldUseMatter && typeof Matter !== 'undefined') {
+                         const { Bodies } = Matter;
+                         const body = Bodies.rectangle(x + width/2, y + height/2, width, height, {
+                             restitution: 0.2,
+                             friction: 0.8,
+                             frictionStatic: 1.0,
+                             density: 0.001,
+                             label: 'box',
+                             chamfer: { radius: 2 }
+                         });
+                         boxBodies.push(body);
+                         matterBoxes.push(index);
+                     } else {
+                         boxBodies.push(null);
+                     }
+                 });
+                 
+                 // Add all Matter.js bodies to the world
+                 if (typeof Matter !== 'undefined' && matterEngine && matterWorld && boxBodies.length > 0) {
+                     const { World } = Matter;
+                     const validBodies = boxBodies.filter(body => body !== null);
+                     if (validBodies.length > 0) {
+                         World.add(matterWorld, validBodies);
+                     }
+                 }
 
                 // Parse backgrounds
                 backgrounds = [];
@@ -354,8 +429,16 @@ document.addEventListener('DOMContentLoaded', () => {
         playerVelocity = { x: 0, y: 0 };
         gravity = gameConfig.gravity;
         isJumping = false;
-        // Use level ground if available so falling off tall levels triggers correct ground collision
         groundLevel = (typeof camera.levelHeight === 'number') ? (camera.levelHeight - player.height) : (canvas.height - player.height);
+
+        // Initialize Matter.js if available
+        if (typeof Matter !== 'undefined') {
+            matterEngine = Matter.Engine.create();
+            matterWorld = matterEngine.world;
+            // Match custom gravity scale (Matter.js uses different scale)
+            matterWorld.gravity.y = gravity / 10;
+            console.log('Matter.js physics engine initialized');
+        }
 
         console.log('Simple physics system initialized. Ground level:', groundLevel);
     }
@@ -954,18 +1037,29 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.appendChild(overlay);
         }
 
-        // Update enemies (they operate in world coordinates)
-        // Pause enemies when dialogue is active
-        const isDialogueActive = window.inkDialogue && typeof window.inkDialogue.isDialogueActive === 'function' && window.inkDialogue.isDialogueActive();
-        if (!isDialogueActive) {
-            updateEnemies(enemies, gameConfig.enemy, platforms, camera);
-        }
+         // Update enemies (they operate in world coordinates)
+         // Pause enemies when dialogue is active
+         const isDialogueActive = window.inkDialogue && typeof window.inkDialogue.isDialogueActive === 'function' && window.inkDialogue.isDialogueActive();
+         if (!isDialogueActive) {
+             updateEnemies(enemies, gameConfig.enemy, platforms, camera);
+         }
 
-        // Update box physics
-        updateBoxes();
+         // Update physics: Matter.js or custom
+         if (typeof Matter !== 'undefined' && matterEngine && matterWorld) {
+             Matter.Engine.update(matterEngine, 1000 / 60);
+             // Sync box positions from Matter.js bodies
+             boxes.forEach((box, i) => {
+                 if (boxBodies[i]) {
+                     box.position.x = boxBodies[i].position.x - box.width / 2;
+                     box.position.y = boxBodies[i].position.y - box.height / 2;
+                 }
+             });
+         } else {
+             updateBoxes();
+         }
 
-        // Check for box-player collisions
-        checkBoxCollisions();
+         // Check for box-player collisions
+         checkBoxCollisions();
 
         // Check for collisions
         checkCollisions();
@@ -1007,82 +1101,99 @@ document.addEventListener('DOMContentLoaded', () => {
         return false;
     }
 
-    // Update box physics
-    function updateBoxes() {
-        boxes.forEach((box, index) => {
-            // Apply gravity to boxes
-            boxVelocities[index].y += gravity;
-            box.position.y += boxVelocities[index].y;
+// Update box physics
+      function updateBoxes() {
+          boxes.forEach((box, index) => {
+              // Skip Matter.js boxes - they are updated by the physics engine
+              if (boxBodies[index] !== null) {
+                  return;
+              }
+              
+              // Apply gravity to boxes (custom physics only)
+              boxVelocities[index].y += gravity;
+              box.position.y += boxVelocities[index].y;
 
-            // Check for platform collisions
-            for (const platform of platforms) {
-                // Check if box is falling onto platform
-                if (boxVelocities[index].y >= 0 &&
-                    box.position.x + box.width > platform.position.x &&
-                    box.position.x < platform.position.x + platform.width &&
-                    box.position.y + box.height > platform.position.y &&
-                    box.position.y + box.height < platform.position.y + box.height + boxVelocities[index].y) {
+              // Check for platform collisions
+              for (const platform of platforms) {
+                  // Check if box is falling onto platform
+                  // Previous bottom position should have been above platform top
+                  const prevBottom = box.position.y + box.height - boxVelocities[index].y;
+                  if (boxVelocities[index].y > 0 &&
+                      box.position.x + box.width > platform.position.x &&
+                      box.position.x < platform.position.x + platform.width &&
+                      prevBottom <= platform.position.y &&
+                      box.position.y + box.height >= platform.position.y) {
 
-                    // Land on platform
-                    box.position.y = platform.position.y - box.height;
-                    boxVelocities[index].y = 0;
-                    break;
-                }
-            }
+                      // Land on platform
+                      box.position.y = platform.position.y - box.height;
+                      boxVelocities[index].y = 0;
+                      break;
+                  }
+              }
 
-            // Check for ground collision
-            if (box.position.y > groundLevel) {
-                box.position.y = groundLevel;
-                boxVelocities[index].y = 0;
-            }
-        });
-    }
+              // Check for ground collision
+              if (box.position.y + box.height > groundLevel) {
+                  box.position.y = groundLevel - box.height;
+                  boxVelocities[index].y = 0;
+              }
+          });
+      }
 
-    // Check for box-player collisions and handle pushing
-    function checkBoxCollisions() {
-        boxes.forEach((box, index) => {
-            // Check if player is colliding with box
-            if (player.position.x + player.width > box.position.x &&
-                player.position.x < box.position.x + box.width &&
-                player.position.y + player.height > box.position.y &&
-                player.position.y < box.position.y + box.height) {
+// Check for box-player collisions and handle pushing
+      function checkBoxCollisions() {
+          boxes.forEach((box, index) => {
+              // Check if player is colliding with box
+              if (player.position.x + player.width > box.position.x &&
+                  player.position.x < box.position.x + box.width &&
+                  player.position.y + player.height > box.position.y &&
+                  player.position.y < box.position.y + box.height) {
 
-                console.log('Player-box collision detected');
+                  console.log('Player-box collision detected');
 
-                // Determine collision direction and handle pushing
-                const playerCenterX = player.position.x + player.width / 2;
-                const boxCenterX = box.position.x + box.width / 2;
+                  // Determine collision direction and handle pushing
+                  const playerBottom = player.position.y + player.height;
+                  const boxTop = box.position.y;
+                  const playerFeetAboveBox = playerBottom <= boxTop + 15; // Allow standing on top
+                  
+                  // Check if this box uses Matter.js
+                  const boxUsesMatter = boxBodies[index] !== null;
 
-                // Horizontal pushing
-                if (Math.abs(playerCenterX - boxCenterX) > Math.abs((player.position.y + player.height/2) - (box.position.y + box.height/2))) {
-                    // Player is to the left of box - push right
-                    if (playerCenterX < boxCenterX && keys.rightKey.pressed) {
-                        box.position.x += 2; // Push box right
-                        console.log('Pushing box right');
-                    }
-                    // Player is to the right of box - push left
-                    else if (playerCenterX > boxCenterX && keys.leftKey.pressed) {
-                        box.position.x -= 2; // Push box left
-                        console.log('Pushing box left');
-                    }
-                }
+                  // Don't push if player is standing on top of box
+                  if (playerFeetAboveBox && playerVelocity.y >= 0) {
+                      return; // Let player stand on box
+                  }
 
-                // Vertical collision (player on top of box)
-                if (player.position.y + player.height <= box.position.y + 10 &&
-                    playerVelocity.y >= 0 &&
-                    Math.abs(playerCenterX - boxCenterX) < (player.width + box.width) / 2) {
+                  // Horizontal pushing - only when player is at same level as box
+                  const playerCenterX = player.position.x + player.width / 2;
+                  const boxCenterX = box.position.x + box.width / 2;
 
-                    // Player can stand on top of box
-                    player.position.y = box.position.y - player.height;
-                    playerVelocity.y = 0;
-                    isJumping = false;
-                    console.log('Player standing on box');
-                }
-            }
-        });
-    }
+                  // Player is to the left of box - push right
+                  if (playerCenterX < boxCenterX - 5 && keys.rightKey.pressed) {
+                      if (boxUsesMatter && typeof Matter !== 'undefined') {
+                          const { Body } = Matter;
+                          Body.setVelocity(boxBodies[index], { x: 3, y: boxBodies[index].velocity.y });
+                          console.log('Pushing box right with Matter.js');
+                      } else {
+                          box.position.x += 3;
+                          console.log('Pushing box right with custom physics');
+                      }
+                  }
+                  // Player is to the right of box - push left
+                  else if (playerCenterX > boxCenterX + 5 && keys.leftKey.pressed) {
+                      if (boxUsesMatter && typeof Matter !== 'undefined') {
+                          const { Body } = Matter;
+                          Body.setVelocity(boxBodies[index], { x: -3, y: boxBodies[index].velocity.y });
+                          console.log('Pushing box left with Matter.js');
+                      } else {
+box.position.x -= 3;
+                          console.log('Pushing box left with custom physics');
+                      }
+                  }
+              }
+          });
+      }
 
-    // Check for collisions
+     // Check for collisions
     function checkCollisions() {
         // Check for collectables (capture updated count returned by helper)
         collectablesCollected = checkCollectableCollisions(player, collectables, collectablesCollected, uiManager, window.audioManager, camera, canvas);

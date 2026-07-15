@@ -1,0 +1,104 @@
+type User @table {
+  displayName: String!
+  email: String!
+  createdAt: Timestamp!
+  role: String! @default(value: "user")
+  userType: String!
+  phoneNumber: String
+  address: String
+  bio: String
+  profilePictureUrl: String
+}
+
+type Category @table(key: "categoryId") {
+  categoryId: String!
+  categoryName: String!
+  categoryLink: String
+  categoryParentId: String
+  categoryIcon: String
+  categoryImage: String
+  createdAt: Timestamp!
+}
+
+type Location @table {
+  name: String!
+  category: String
+  shortDescription: String
+  description: String
+  images: [String]
+  lat: Float
+  lng: Float
+  likes: Int @default(value: 0)
+  dislikes: Int @default(value: 0)
+  months: [Int]
+  season: String
+  status: String @default(value: "active")
+  tags: [String]
+  whatThreeWords: String
+  createdAt: Timestamp!
+  postedBy: User
+}
+
+type FoodItem @table {
+  name: String!
+  description: String!
+  quantity: Int!
+  createdAt: Timestamp!
+  status: String!
+  postedBy: User
+  category: String
+  expirationDate: Date
+  pickupInstructions: String
+  imageUrl: String
+  # Location fields for map display
+  lat: Float
+  lng: Float
+  address: String
+  town: String
+  county: String
+  postcode: String
+  # Season availability (array of month numbers 1-12)
+  season: String
+  # Original type for display
+  originalType: String
+  # Link to more info
+  link: String
+  # Feedback counts
+  likes: Int
+  dislikes: Int
+}
+
+type Request @table {
+  requestedBy: User
+  foodItem: FoodItem
+  createdAt: Timestamp!
+  status: String!
+  messageToDonor: String
+}
+
+type Report @table {
+  category: String!
+  details: String!
+  status: String! @default(value: "pending")
+  createdAt: Timestamp!
+  locationName: String
+  location: Location
+  reportedBy: User
+}
+
+type Community @table {
+  name: String!
+  location: String!
+  createdAt: Timestamp!
+  description: String
+  moderator: User
+}
+
+type Review @table {
+  reviewer: User
+  reviewedUser: User
+  request: Request
+  rating: Int!
+  createdAt: Timestamp!
+  comment: String
+}

@@ -97,7 +97,7 @@
       </g>
     </g>
   </g>
-  <g id="boxes">
+  <g id="boxes" class="matter">
     <rect class="st3" x="1601" y="618.89" width="39" height="39"/>
     <rect class="st3" x="1614.88" y="579.3" width="39" height="39"/>
     <rect class="st1" x="1556.94" y="618.92" width="39" height="39" transform="translate(485.3 1943.09) rotate(-72.14)"/>

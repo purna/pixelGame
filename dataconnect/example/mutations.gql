@@ -1,0 +1,243 @@
+# Foodshare mutations for food items, requests, and users
+
+# Create a new food item with location
+mutation CreateFoodItem(
+  $name: String!
+  $description: String!
+  $quantity: Int!
+  $category: String
+  $expirationDate: Date
+  $pickupInstructions: String
+  $imageUrl: String
+  $lat: Float
+  $lng: Float
+  $address: String
+  $town: String
+  $county: String
+  $postcode: String
+  $season: String
+  $originalType: String
+  $link: String
+) @auth(level: USER) {
+  foodItem_insert(data: {
+    name: $name
+    description: $description
+    quantity: $quantity
+    category: $category
+    expirationDate: $expirationDate
+    pickupInstructions: $pickupInstructions
+    imageUrl: $imageUrl
+    lat: $lat
+    lng: $lng
+    address: $address
+    town: $town
+    county: $county
+    postcode: $postcode
+    season: $season
+    originalType: $originalType
+    link: $link
+    status: "available"
+    likes: 0
+    dislikes: 0
+    createdAt_expr: "request.time"
+    postedById_expr: "auth.uid"
+  })
+}
+
+# Update an existing food item (only by the owner)
+mutation UpdateFoodItem(
+  $id: UUID!
+  $name: String
+  $description: String
+  $quantity: Int
+  $category: String
+  $status: String
+  $expirationDate: Date
+  $pickupInstructions: String
+  $imageUrl: String
+  $lat: Float
+  $lng: Float
+  $address: String
+  $town: String
+  $county: String
+  $postcode: String
+  $season: String
+  $originalType: String
+  $link: String
+) @auth(level: USER) {
+  foodItem_update(
+    key: { id: $id }
+    data: {
+      name: $name
+      description: $description
+      quantity: $quantity
+      category: $category
+      status: $status
+      expirationDate: $expirationDate
+      pickupInstructions: $pickupInstructions
+      imageUrl: $imageUrl
+      lat: $lat
+      lng: $lng
+      address: $address
+      town: $town
+      county: $county
+      postcode: $postcode
+      season: $season
+      originalType: $originalType
+      link: $link
+    }
+  )
+}
+
+# Delete a food item (only by the owner)
+mutation DeleteFoodItem($id: UUID!) @auth(level: USER) {
+  foodItem_delete(key: { id: $id })
+}
+
+# Update food item status (e.g., mark as reserved or collected)
+mutation UpdateFoodItemStatus($id: UUID!, $status: String!) @auth(level: USER) {
+  foodItem_update(
+    key: { id: $id }
+    data: { status: $status }
+  )
+}
+
+# # Increment likes for a food item
+# mutation IncrementLikes($id: UUID!) @auth(level: PUBLIC, insecureReason: "Anyone can like a food item.") {
+#   foodItem_update(
+#     key: { id: $id }
+#     data: { likes_expr: "likes + 1" }
+#   )
+# }
+#
+# # Increment dislikes for a food item
+# mutation IncrementDislikes($id: UUID!) @auth(level: PUBLIC, insecureReason: "Anyone can dislike a food item.") {
+#   foodItem_update(
+#     key: { id: $id }
+#     data: { dislikes_expr: "dislikes + 1" }
+#   )
+# }
+
+# Create a new user profile (called after authentication)
+mutation UpsertUser(
+  $displayName: String!
+  $email: String!
+  $userType: String!
+  $phoneNumber: String
+  $address: String
+  $bio: String
+  $profilePictureUrl: String
+) @auth(level: USER) {
+  user_upsert(data: {
+    id_expr: "auth.uid"
+    displayName: $displayName
+    email: $email
+    userType: $userType
+    phoneNumber: $phoneNumber
+    address: $address
+    bio: $bio
+    profilePictureUrl: $profilePictureUrl
+    createdAt_expr: "request.time"
+  })
+}
+
+# Update user profile
+mutation UpdateUserProfile(
+  $displayName: String
+  $phoneNumber: String
+  $address: String
+  $bio: String
+  $profilePictureUrl: String
+) @auth(level: USER) {
+  user_update(
+    key: { id_expr: "auth.uid" }
+    data: {
+      displayName: $displayName
+      phoneNumber: $phoneNumber
+      address: $address
+      bio: $bio
+      profilePictureUrl: $profilePictureUrl
+    }
+  )
+}
+
+# Create a request for a food item
+mutation CreateRequest(
+  $foodItemId: UUID!
+  $messageToDonor: String
+) @auth(level: USER) {
+  request_insert(data: {
+    foodItemId: $foodItemId
+    messageToDonor: $messageToDonor
+    status: "pending"
+    createdAt_expr: "request.time"
+    requestedById_expr: "auth.uid"
+  })
+}
+
+# Update request status (accept/reject by donor, or cancel by requester)
+mutation UpdateRequestStatus($id: UUID!, $status: String!) @auth(level: USER) {
+  request_update(
+    key: { id: $id }
+    data: { status: $status }
+  )
+}
+
+# Delete/cancel a request
+mutation DeleteRequest($id: UUID!) @auth(level: USER) {
+  request_delete(key: { id: $id })
+}
+
+# Create a review for a user after a completed transaction
+mutation CreateReview(
+  $reviewedUserId: UUID!
+  $requestId: UUID!
+  $rating: Int!
+  $comment: String
+) @auth(level: USER) {
+  review_insert(data: {
+    reviewedUserId: $reviewedUserId
+    requestId: $requestId
+    rating: $rating
+    comment: $comment
+    createdAt_expr: "request.time"
+    reviewerId_expr: "auth.uid"
+  })
+}
+
+# Create a new community
+mutation CreateCommunity(
+  $name: String!
+  $location: String!
+  $description: String
+) @auth(level: USER) {
+  community_insert(data: {
+    name: $name
+    location: $location
+    description: $description
+    createdAt_expr: "request.time"
+    moderatorId_expr: "auth.uid"
+  })
+}
+
+# Update community details (only by moderator)
+mutation UpdateCommunity(
+  $id: UUID!
+  $name: String
+  $location: String
+  $description: String
+) @auth(level: USER) {
+  community_update(
+    key: { id: $id }
+    data: {
+      name: $name
+      location: $location
+      description: $description
+    }
+  )
+}
+
+# Delete a community (only by moderator)
+mutation DeleteCommunity($id: UUID!) @auth(level: USER) {
+  community_delete(key: { id: $id })
+}
