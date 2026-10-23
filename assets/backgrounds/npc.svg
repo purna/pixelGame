@@ -1,35 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 320.41 400">
-  <!-- Generator: Adobe Illustrator 30.1.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 136)  -->
+  <!-- NPC (Israelite elder). Same viewBox, ids and bounds as the original: figure fills 145.32,186.45 28.35x56.69; hide group is the "talk" marker. -->
   <defs>
+    <linearGradient id="npcRobe" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#d3764a"/><stop offset="1" stop-color="#a24a35"/></linearGradient>
+    <linearGradient id="npcBubble" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a74c4"/><stop offset="1" stop-color="#1c3f86"/></linearGradient>
     <style>
-      .st0 {
-        fill: #87ceeb;
-      }
-
-      .st1 {
-        display: none;
-      }
-
-      .st2 {
-        fill: #483d8b;
-      }
-
-      .st3 {
-        fill: #fff;
-        isolation: isolate;
-        opacity: .8;
-      }
+      .st1{display:none}
+      .n{stroke:#2a1810;stroke-width:1.1;stroke-linejoin:round;stroke-linecap:round}
     </style>
   </defs>
   <g id="npcs">
     <g id="npc">
       <g id="show">
-        <rect class="st0" x="145.32" y="186.45" width="28.35" height="56.69"/>
+        <ellipse cx="159.5" cy="243" rx="13" ry="2.4" fill="#2a1810" opacity=".22"/>
+        <path class="n" d="M149,203C149,199 154,197 159.5,197C165,197 170,199 170,203L173,242C165,244 154,244 146,242Z" fill="url(#npcRobe)"/>
+        <path class="n" d="M149,203C149,199 154,197 158,197L163,214C161,226 162,236 165,243C158,244 152,244 146,242Z" fill="#f1e4c4"/>
+        <path d="M158,198L163,214C161,226 162,236 165,243" fill="none" stroke="#f2c14e" stroke-width="1.3" stroke-linecap="round"/>
+        <path d="M147,223C156,227 164,227 172,223" fill="none" stroke="#2a1810" stroke-width="3.4" stroke-linecap="round"/>
+        <path d="M147,223C156,227 164,227 172,223" fill="none" stroke="#2f6fb5" stroke-width="1.8" stroke-linecap="round"/>
+        <path class="n" d="M153,205C151,213 154,217 159.5,219C165,217 168,213 166,205C164,209 162,210 159.5,210C157,210 155,209 153,205Z" fill="#ece8de"/>
+        <circle class="n" cx="159.5" cy="197" r="7.6" fill="#d9a273"/>
+        <path class="n" d="M152,196C151,189 155,187 159.5,187C164,187 168.5,189 167,196C165,193 162,192 159.5,192C157,192 154,193 152,196Z" fill="#f4ead0"/>
+        <path d="M152.5,189.5L166.5,189.5" stroke="#2f6fb5" stroke-width="1.3"/>
+        <circle cx="156.6" cy="197" r="1.1" fill="#2a1810"/><circle cx="162.4" cy="197" r="1.1" fill="#2a1810"/>
+        <path d="M156,200C158,201.6 161,201.6 163,200" fill="none" stroke="#ece8de" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M171.5,243L171.5,190C171.5,186 166.5,186 166.5,189" fill="none" stroke="#2a1810" stroke-width="3.8" stroke-linecap="round"/>
+        <path d="M171.5,243L171.5,190C171.5,186 166.5,186 166.5,189" fill="none" stroke="#8a5a2b" stroke-width="2" stroke-linecap="round"/>
+        <circle class="n" cx="171.5" cy="214" r="2.6" fill="#d9a273"/>
       </g>
       <g id="hide" class="st1">
-        <rect class="st2" x="142.7" y="156.86" width="35.01" height="25.6"/>
-        <path class="st3" d="M157.5,172.38h1.83v-4.85h-1.83v-1.48h5.42v1.48h-1.83v4.85h1.83v1.48h-5.42v-1.48Z"/>
+        <path d="M156,181L160.2,187.5L164.4,181Z" fill="#1c3f86" stroke="#f2c14e" stroke-width="1.4" stroke-linejoin="round"/>
+        <rect x="142.7" y="156.86" width="35.01" height="25.6" rx="7" fill="url(#npcBubble)" stroke="#f2c14e" stroke-width="2"/>
+        <rect x="143.9" y="166" width="32.6" height="2" fill="none"/>
+        <circle cx="160.2" cy="162.8" r="2.2" fill="#fff"/>
+        <rect x="158.3" y="166.4" width="3.8" height="10.2" rx="1.4" fill="#fff"/>
       </g>
     </g>
   </g>

@@ -1,68 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Gold coin stamped with an ankh -->
   <defs>
-    <!-- Main gold gradient with metallic shine -->
-    <linearGradient id="coinGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
-      <stop offset="30%" style="stop-color:#FFA500;stop-opacity:1" />
-      <stop offset="50%" style="stop-color:#FF8C00;stop-opacity:1" />
-      <stop offset="70%" style="stop-color:#DAA520;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#B8860B;stop-opacity:1" />
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff0a8"/><stop offset=".35" stop-color="#f5bd36"/><stop offset=".7" stop-color="#d48f12"/><stop offset="1" stop-color="#9a6410"/>
     </linearGradient>
-    
-    <!-- Top highlight for 3D effect -->
-    <radialGradient id="topHighlight" cx="35%" cy="35%" r="60%">
-      <stop offset="0%" style="stop-color:#FFF8DC;stop-opacity:0.9" />
-      <stop offset="40%" style="stop-color:#FFD700;stop-opacity:0.5" />
-      <stop offset="100%" style="stop-color:#FF8C00;stop-opacity:0.1" />
-    </radialGradient>
-    
-    <!-- Side shadow for depth -->
-    <radialGradient id="sideShadow" cx="50%" cy="50%" r="70%">
-      <stop offset="0%" style="stop-color:#B8860B;stop-opacity:0" />
-      <stop offset="70%" style="stop-color:#8B6914;stop-opacity:0.3" />
-      <stop offset="100%" style="stop-color:#654321;stop-opacity:0.6" />
-    </radialGradient>
-    
-    <!-- Inner rim gradient -->
-    <linearGradient id="rimGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#DAA520;stop-opacity:1" />
-      <stop offset="50%" style="stop-color:#B8860B;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#8B6914;stop-opacity:1" />
+    <linearGradient id="face" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffd95e"/><stop offset="1" stop-color="#e0a020"/>
+    </linearGradient>
+    <linearGradient id="ankh" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#a86a10"/><stop offset="1" stop-color="#6e4208"/>
     </linearGradient>
   </defs>
-  
-  <!-- Coin edge/rim - gives thickness appearance -->
-  <ellipse cx="16" cy="16" rx="14" ry="13.5" fill="url(#rimGradient)" stroke="#654321" stroke-width="0.5"/>
-  
-  <!-- Side shadow for 3D depth -->
-  <ellipse cx="16" cy="16" rx="13.5" ry="13" fill="url(#sideShadow)"/>
-  
-  <!-- Main coin face -->
-  <circle cx="16" cy="16" r="12" fill="url(#coinGradient)" stroke="#8B6914" stroke-width="1"/>
-  
-  <!-- Top highlight for 3D shine -->
-  <ellipse cx="12" cy="10" rx="6" ry="4" fill="url(#topHighlight)" opacity="0.8"/>
-  
-  <!-- Center design - 3D effect with multiple layers -->
-  <circle cx="16" cy="16" r="6" fill="url(#topHighlight)" opacity="0.4"/>
-  <circle cx="16" cy="16" r="4" fill="#FFD700" stroke="#8B6914" stroke-width="0.5"/>
-  
-  <!-- Inner highlight -->
-  <circle cx="14" cy="14" r="2" fill="#FFF8DC" opacity="0.6"/>
-  
-  <!-- Small center dot for detail -->
-  <circle cx="16" cy="16" r="1.5" fill="#8B6914" opacity="0.8"/>
-  
-  <!-- Edge bevel highlight -->
-  <ellipse cx="16" cy="8" rx="11" ry="3" fill="#FFF8DC" opacity="0.3"/>
-  
-  <!-- Subtle texture lines for metallic feel -->
-  <g opacity="0.15">
-    <line x1="16" y1="6" x2="16" y2="26" stroke="#8B6914" stroke-width="0.5"/>
-    <line x1="10" y1="10" x2="22" y2="22" stroke="#8B6914" stroke-width="0.3"/>
-    <line x1="22" y1="10" x2="10" y2="22" stroke="#8B6914" stroke-width="0.3"/>
+  <circle cx="16" cy="16.6" r="14" fill="#6e4208"/>
+  <circle cx="16" cy="16" r="14" fill="url(#gold)" stroke="#6e4208" stroke-width="1"/>
+  <circle cx="16" cy="16" r="10.8" fill="url(#face)" stroke="#a86a10" stroke-width=".8"/>
+  <circle cx="16" cy="16" r="12.4" fill="none" stroke="#fff3b0" stroke-width=".7" stroke-dasharray="1.2 1.6" opacity=".8"/>
+  <g fill="none" stroke="url(#ankh)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="16" cy="11.6" rx="3.1" ry="3.6"/>
+    <path d="M16,15.4V24.6M11.4,18.4H20.6"/>
   </g>
-  
-  <!-- Outer rim highlight for thickness -->
-  <circle cx="16" cy="16" r="13" fill="none" stroke="#FFF8DC" stroke-width="0.5" opacity="0.4"/>
+  <g fill="none" stroke="#fff3b0" stroke-width=".7" stroke-linecap="round" opacity=".7">
+    <path d="M14.6,9.8Q15.4,8.8 16.6,8.8"/>
+    <path d="M15,17.4V22"/>
+  </g>
+  <path d="M5.5,12.5A11,11 0 0 1 14,5.2" fill="none" stroke="#fffbe0" stroke-width="1.6" stroke-linecap="round" opacity=".75"/>
+  <path d="M26.6,5.4v3.2M25,7h3.2" stroke="#fff" stroke-width="1" stroke-linecap="round" opacity=".9"/>
 </svg>
