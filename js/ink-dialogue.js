@@ -643,10 +643,10 @@
 
         const filenames = [];
         if (variant) {
-            filenames.push(`${person}_${variant}.png`);
+            filenames.push(`${person}_${variant}.svg`, `${person}_${variant}.png`);
         }
-        // Common order
-        filenames.push(`${person}_Neutral.png`, `${person}_Happy.png`, `${person}_Sad.png`, `${person}.png`);
+        filenames.push(`${person}_Neutral.svg`, `${person}_Happy.svg`, `${person}_Sad.svg`, `${person}_Angry.svg`,
+                      `${person}_Neutral.png`, `${person}_Happy.png`, `${person}_Sad.png`, `${person}.png`);
 
         portraitImg.src = '';
         for (const fname of filenames) {
